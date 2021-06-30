@@ -1,0 +1,7 @@
+node_modules
+build
+npm-debug.log
+.nyc
+.env
+.DS_Store
+DO_NOT_INCLUDE_admin-key.json
