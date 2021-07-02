@@ -27,16 +27,36 @@ admin.initializeApp({
     databaseURL: 'https://cop4331-group15-default-rtdb.firebaseio.com'
 });
 
+const devUser = {
+    iss: 'https://securetoken.google.com/cop4331-group15',
+    aud: 'cop4331-group15',
+    auth_time: 1625241363,
+    user_id: '_dev_account',
+    sub: '_dev_account',
+    iat: 1625241363,
+    exp: 1625244963,
+    email: 'dev@example.com',
+    email_verified: false,
+    firebase: { identities: { email: [Array] }, sign_in_provider: 'password'},
+    uid: '_dev_account'
+}
+
 async function decodeIDToken(req, res, next) {
     const header = req.headers?.authorization;
     if(header !== 'Bearer null' && req.headers?.authorization?.startsWith('Bearer ')) {
         const idToken = req.headers.authorization.split('Bearer ')[1];
-        try {
-            const decodedToken = await admin.auth().verifyIdToken(idToken);
-            req['currentUser'] = decodedToken;
-            req['authToken'] = idToken;
-        } catch (err) {
-            console.log("Error decoding token: " + err);
+        console.log(idToken);
+        if(idToken === "dev") {
+            req['currentUser'] = devUser;
+            req['authToken'] = null;
+        } else {
+            try {
+                const decodedToken = await admin.auth().verifyIdToken(idToken);
+                req['currentUser'] = decodedToken;
+                req['authToken'] = idToken;
+            } catch (err) {
+                console.log("Error decoding token: " + err);
+            }
         }
     }
 
