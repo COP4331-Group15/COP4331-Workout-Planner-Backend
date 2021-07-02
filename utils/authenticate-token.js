@@ -28,23 +28,16 @@ admin.initializeApp({
 });
 
 async function decodeIDToken(req, res, next) {
-    console.log("HEllo!");
     const header = req.headers?.authorization;
     if(header !== 'Bearer null' && req.headers?.authorization?.startsWith('Bearer ')) {
         const idToken = req.headers.authorization.split('Bearer ')[1];
-
-        console.log("Has header! Parsing");
-
         try {
             const decodedToken = await admin.auth().verifyIdToken(idToken);
             req['currentUser'] = decodedToken;
             req['authToken'] = idToken;
-            console.log("Has token");
         } catch (err) {
-            console.log(err);
+            console.log("Error decoding token: " + err);
         }
-    } else {
-        console.log(header);
     }
 
     next();

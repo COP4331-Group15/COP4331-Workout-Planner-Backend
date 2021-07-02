@@ -2,6 +2,7 @@ const FBEndpoints = require('./utils/firebase-endpoints');
 
 exports.setApp = function (app) {
     app.get('/api/test', async (req, res, next) => {
+        
         // Check our authentication status
         const auth = req.currentUser;
         const token = req.authToken;
