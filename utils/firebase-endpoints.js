@@ -15,6 +15,21 @@ const getValueAtPath = async (authkey, path) => {
     }
 }
 
+const deleteValueAtPath = async (authkey, path) => {
+    var builtPath = `${FB_URL}${path}.json`;
+    if(authkey != null) builtPath += `?auth=${authkey}`;
+
+    
+    axios.delete(builtPath)
+        .then(res =>{
+            console.log(res);
+            console.log(res.data);
+        })
+        .catch(e =>{
+            console.log(e);
+        });
+}
+
 //puts data at a specific path
 //IF ANYTHING IS ALREADY AT THAT PATH, IT WILL OVER WRITE
 const putValueAtPath = async (authkey, path, data) => {
@@ -60,5 +75,6 @@ const postValueAtPath = async (authkey, path, data) => {
 }
 
 exports.putValueAtPath = putValueAtPath;
+exports.deleteValueAtPath = deleteValueAtPath;
 exports.postValueAtPath = postValueAtPath;
 exports.getValueAtPath = getValueAtPath;
