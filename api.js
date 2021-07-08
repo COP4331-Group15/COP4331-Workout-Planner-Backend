@@ -11,16 +11,16 @@ exports.setApp = function (app) {
 
       // Stores the inputted exercise in JSON format.
       const {muscleGroup, focusTypes, name, sets, repititions, duration, resistance} = req.body;
-      const newExercise = {MuscleGroup: muscleGroup, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance};
+      const newExercise = {MuscleGroup: muscleGroup, FocusTypes: focusTypes, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance};
       const token = req.authToken;
 
       // Gets the path of the current user's exercises.
-      var path = 'exercise/' + req.params.uuid;
+      var path = '/exercise/' + req.params.uuid + '/create';
       var ret;
       var error = '';
       try {
         // Attempts to post the JSON exercise to the database.
-        const result = await FBEndpoints.postValueAtPath(token, path, newExercise);
+        var result = await FBEndpoints.postValueAtPath(token, path, newExercise);
         ret = {message: "Exercise created successfully", data: result};
         res.status(200).json(ret);
       } catch (e) {
@@ -37,11 +37,11 @@ exports.setApp = function (app) {
       const token = req.authToken;
 
       // Gets the path of the current user's exercises.
-      var path = 'exercise/' + req.params.uuid;
+      var path = '/exercise/' + req.params.uuid;
       var ret;
       try {
         // Attempts to get all the JSON exercises at the current path.
-        const result = await FBEndpoints.getValueAtPath(token, path);
+        var result = await FBEndpoints.getValueAtPath(token, path);
         res.status(200).json(result);
       } catch (e) {
         // Prints any error that occurs.
@@ -56,12 +56,12 @@ exports.setApp = function (app) {
       const token = req.authToken;
 
       // Gets the path of the a specific exercise from among the user's exercises.
-      var path = 'exercise/' + req.params.uuid + '/' + req.params.exerciseId;
+      var path = '/exercise/' + req.params.uuid + '/' + req.params.exerciseId;
       var ret;
       var error = '';
       try {
         // Attempts to get the specific JSON exercise selected.
-        const result = await FBEndpoints.getValueAtPath(token, path);
+        var result = await FBEndpoints.getValueAtPath(token, path);
         res.status(200).json(result);
       } catch (e) {
         // Prints an error if the exercise is not found.
@@ -76,22 +76,45 @@ exports.setApp = function (app) {
 
       // Stores the inputted updated exercise in JSON format.
       const {muscleGroup, focusTypes, name, sets, repititions, duration, resistance} = req.body;
-      const updatedExercise = {MuscleGroup: muscleGroup, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance}
+      const updatedExercise = {MuscleGroup: muscleGroup, FocusTypes: focusTypes, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance}
       const token = req.authToken;
 
       // Gets the path of the a specific exercise from among the user's exercises.
-      var path = 'exercise/' + req.params.uuid + '/' + req.params.exerciseId;
+      var path = '/exercise/' + req.params.uuid + '/' + req.params.exerciseId + '/update';
       var ret;
       var error = '';
       try {
         // Attempts to put the updated exercise in the place of the selected exercise.
-        const result = await FBEndpoints.putValueAtPath(token, path, updatedExercise);
+        var result = await FBEndpoints.putValueAtPath(token, path, updatedExercise);
         ret = {message: "Exercise updated successfully"};
         res.status(200).json(ret);
       } catch (e) {
         // Prints any error that occurs.
         error = e.toString();
-        ret = {message: "Error updateing exercise", error: error};
+        ret = {message: "Error updating exercise", error: error};
+        res.status(400).json(ret);
+      }
+    })
+
+    // Deletes an existing exercise.
+    app.delete('/api/exercise/:uuid/:exerciseId/delete', async (req, res, next) => {
+
+      const token = req.authToken;
+
+      // Gets the path of the a specific exercise from among the user's exercises.
+      var path = '/exercise/' + req.params.uuid + '/' + req.params.exerciseId + '/delete';
+      var ret;
+      var error = '';
+
+      try {
+        // Attempts to delete the selected exercise.
+        var result = await FBEndpoints.deleteValueAtPath(token, path);
+        ret = {message: "Exercise deleted successfully"};
+        res.status(200).json(ret);
+      } catch (e) {
+        // Prints any error that occurs.
+        error = e.toString();
+        ret = {message: "Error deleting exercise", error: error};
         res.status(400).json(ret);
       }
     })
@@ -105,16 +128,16 @@ exports.setApp = function (app) {
 
       // Stores the inputted workout in JSON format.
       const {muscleGroup, focusTypes, name, sets, repititions, duration, resistance, exercises} = req.body;
-      const newWorkout = {MuscleGroup: muscleGroup, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance, Exercises: exercises};
+      const newWorkout = {MuscleGroup: muscleGroup, FocusTypes: focusTypes, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance, Exercises: exercises};
       const token = req.authToken;
 
       // Gets the path of the current user's workouts.
-      var path = 'workout/' + req.params.uuid;
+      var path = '/workout/' + req.params.uuid + '/create';
       var ret;
       var error = '';
       try {
         // Attempts to post the JSON workout to the database.
-        const result = await FBEndpoints.postValueAtPath(token, path, newWorkout);
+        var result = await FBEndpoints.postValueAtPath(token, path, newWorkout);
         ret = {message: "Workout created successfully", data: result};
         res.status(200).json(ret);
       } catch (e) {
@@ -131,11 +154,11 @@ exports.setApp = function (app) {
       const token = req.authToken;
 
       // Gets the path of the current user's workouts.
-      var path = 'workout/' + req.params.uuid;
+      var path = '/workout/' + req.params.uuid;
       var ret;
       try {
         // Attempts to get all the JSON exercises at the current path.
-        const result = await FBEndpoints.getValueAtPath(token, path);
+        var result = await FBEndpoints.getValueAtPath(token, path);
         res.status(200).json(result);
       } catch (e) {
         // Prints any error that occurs.
@@ -145,17 +168,17 @@ exports.setApp = function (app) {
     })
 
     // Gets a specific workout.
-    app.get('/api/workout/:uuid/:workoutID', async (req, res, next) => {
+    app.get('/api/workout/:uuid/:workoutId', async (req, res, next) => {
 
       const token = req.authToken;
 
       // Gets the path of the a specific workout from among the user's workouts.
-      var path = 'workout/' + req.params.uuid + '/' + req.params.workoutId;
+      var path = '/workout/' + req.params.uuid + '/' + req.params.workoutId;
       var ret;
       var error = '';
       try {
         // Attempts to get the specific JSON workout selected.
-        const result = await FBEndpoints.getValueAtPath(token, path);
+        var result = await FBEndpoints.getValueAtPath(token, path);
         res.status(200).json(result);
       } catch (e) {
         // Prints an error if the workout is not found.
@@ -170,22 +193,45 @@ exports.setApp = function (app) {
 
       // Stores the inputted updated workout in JSON format.
       const {muscleGroup, focusTypes, name, sets, repititions, duration, resistance, exercises} = req.body;
-      const updatedWorkout = {MuscleGroup: muscleGroup, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance, Exercises: exercises}
+      const updatedWorkout = {MuscleGroup: muscleGroup, FocusTypes: focusTypes, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance, Exercises: exercises}
       const token = req.authToken;
 
       // Gets the path of the a specific workout from among the user's workouts.
-      var path = 'workout/' + req.params.uuid + '/' + req.params.workoutId;
+      var path = '/workout/' + req.params.uuid + '/' + req.params.workoutId + '/update';
       var ret;
       var error = '';
       try {
         // Attempts to put the updated workout in the place of the selected workout.
-        const result = await FBEndpoints.putValueAtPath(token, path, updatedWorkout);
+        var result = await FBEndpoints.putValueAtPath(token, path, updatedWorkout);
         ret = {message: "Workout updated successfully"};
         res.status(200).json(ret);
       } catch (e) {
         // Prints any error that occurs.
         error = e.toString();
         ret = {message: "Error updateing workout", error: error};
+        res.status(400).json(ret);
+      }
+    })
+
+    // Deletes an existing workout.
+    app.delete('/api/workout/:uuid/:workoutId/delete', async (req, res, next) => {
+
+      const token = req.authToken;
+
+      // Gets the path of the a specific exercise from among the user's exercises.
+      var path = '/workout/' + req.params.uuid + '/' + req.params.exerciseId + '/delete';
+      var ret;
+      var error = '';
+
+      try {
+        // Attempts to delete the selected workout.
+        var result = await FBEndpoints.deleteValueAtPath(token, path);
+        ret = {message: "Workout deleted successfully"};
+        res.status(200).json(ret);
+      } catch (e) {
+        // Prints any error that occurs.
+        error = e.toString();
+        ret = {message: "Error deleting workout", error: error};
         res.status(400).json(ret);
       }
     })
@@ -203,12 +249,12 @@ exports.setApp = function (app) {
       const token = req.authToken;
 
       // Gets the path where the user's split will be stored.
-      var path = 'split/' + req.params.uuid;
+      var path = '/split/' + req.params.uuid + '/create';
       var ret;
       var error = '';
       try {
         // Attempts to post the JSON split to the database.
-        const result = await FBEndpoints.postValueAtPath(token, path, newSplit);
+        var result = await FBEndpoints.postValueAtPath(token, path, newSplit);
         ret = {message: "Split created successfully", data: result};
         res.status(200).json(ret);
       } catch (e) {
@@ -225,11 +271,11 @@ exports.setApp = function (app) {
       const token = req.authToken;
 
       // Gets the path of the current user's split.
-      var path = 'split/' + req.params.uuid;
+      var path = '/split/' + req.params.uuid;
       var ret;
       try {
         // Attempts to get the user's JSON split from the current path.
-        const result = await FBEndpoints.getValueAtPath(token, path);
+        var result = await FBEndpoints.getValueAtPath(token, path);
         res.status(200).json(result);
       } catch (e) {
         // Prints any error that occurs.
@@ -247,12 +293,12 @@ exports.setApp = function (app) {
       const token = req.authToken;
 
       // Gets the path of the current user's split.
-      var path = 'split/' + req.params.uuid;
+      var path = '/split/' + req.params.uuid + '/update';
       var ret;
       var error = '';
       try {
         // Attempts to put the updated split in the place of the user's current split.
-        const result = await FBEndpoints.putValueAtPath(token, path, updatedSplit);
+        var result = await FBEndpoints.putValueAtPath(token, path, updatedSplit);
         ret = {message: "Split updated successfully"};
         res.status(200).json(ret);
       } catch (e) {
