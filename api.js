@@ -15,7 +15,7 @@ exports.setApp = function (app) {
       const token = req.authToken;
 
       // Gets the path of the current user's exercises.
-      var path = '/exercise/' + req.params.uuid + '/create';
+      var path = '/exercise/' + req.params.uuid;
       var ret;
       var error = '';
       try {
@@ -80,7 +80,7 @@ exports.setApp = function (app) {
       const token = req.authToken;
 
       // Gets the path of the a specific exercise from among the user's exercises.
-      var path = '/exercise/' + req.params.uuid + '/' + req.params.exerciseId + '/update';
+      var path = '/exercise/' + req.params.uuid + '/' + req.params.exerciseId;
       var ret;
       var error = '';
       try {
@@ -102,7 +102,7 @@ exports.setApp = function (app) {
       const token = req.authToken;
 
       // Gets the path of the a specific exercise from among the user's exercises.
-      var path = '/exercise/' + req.params.uuid + '/' + req.params.exerciseId + '/delete';
+      var path = '/exercise/' + req.params.uuid + '/' + req.params.exerciseId;
       var ret;
       var error = '';
 
@@ -132,7 +132,7 @@ exports.setApp = function (app) {
       const token = req.authToken;
 
       // Gets the path of the current user's workouts.
-      var path = '/workout/' + req.params.uuid + '/create';
+      var path = '/workout/' + req.params.uuid;
       var ret;
       var error = '';
       try {
@@ -197,7 +197,7 @@ exports.setApp = function (app) {
       const token = req.authToken;
 
       // Gets the path of the a specific workout from among the user's workouts.
-      var path = '/workout/' + req.params.uuid + '/' + req.params.workoutId + '/update';
+      var path = '/workout/' + req.params.uuid + '/' + req.params.workoutId;
       var ret;
       var error = '';
       try {
@@ -219,7 +219,7 @@ exports.setApp = function (app) {
       const token = req.authToken;
 
       // Gets the path of the a specific exercise from among the user's exercises.
-      var path = '/workout/' + req.params.uuid + '/' + req.params.exerciseId + '/delete';
+      var path = '/workout/' + req.params.uuid + '/' + req.params.exerciseId;
       var ret;
       var error = '';
 
@@ -249,7 +249,7 @@ exports.setApp = function (app) {
       const token = req.authToken;
 
       // Gets the path where the user's split will be stored.
-      var path = '/split/' + req.params.uuid + '/create';
+      var path = '/split/' + req.params.uuid;
       var ret;
       var error = '';
       try {
@@ -293,7 +293,7 @@ exports.setApp = function (app) {
       const token = req.authToken;
 
       // Gets the path of the current user's split.
-      var path = '/split/' + req.params.uuid + '/update';
+      var path = '/split/' + req.params.uuid;
       var ret;
       var error = '';
       try {
