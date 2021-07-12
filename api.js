@@ -7,21 +7,21 @@ exports.setApp = function (app) {
   // ==================
 
   // Adds a one-off workout to the given day
-  app.post('/api/calender/:uuid/:year/:month/:day', async (req, res, next) => {
+  app.post('/api/calendar/:uuid/:year/:month/:day/create', async (req, res, next) => {
 
     // Stores the inputted workout in JSON format.
-    const {muscleGroup, focusTypes, name, sets, repititions, duration, resistance, exercises} = req.body;
-    const newCalenderWorkout = {MuscleGroup: muscleGroup, FocusTypes: focusTypes, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance, Exercises: exercises};
+    const {muscleGroup, focusTypes, name, sets, repititions, duration, resistance, exercises, split, unworkable} = req.body;
+    const newCalenderWorkout = {MuscleGroup: muscleGroup, FocusTypes: focusTypes, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance, Exercises: exercises, Split: split, Unworkable: unworkable};
     const token = req.authToken;
 
     // Gets the path of the current user's workout for that day.
-    var path = '/calender/' + req.params.uuid + '/' + req.params.year + '/' + req.params.month + '/' + req.params.day;
+    var path = '/calendar/' + req.params.uuid + '/' + req.params.year + '/' + req.params.month + '/' + req.params.day;
     var ret;
     var error = '';
     try {
       // Attempts to post the JSON workout to the database.
       var result = await FBEndpoints.postValueAtPath(token, path, newCalenderWorkout);
-      ret = {message: "Workout created successfully"};
+      ret = {message: "Workout created successfully", data: result};
       res.status(200).json(ret);
     } catch (e) {
       // Prints any error that occurs.
@@ -31,13 +31,14 @@ exports.setApp = function (app) {
     }
   })
 
+  // TODO
   // Gets a calendar for the current user on the given month and year.
-  app.get('/api/calender/:uuid/:year/:month', async (req, res, next) => {
+  app.get('/api/calendar/:uuid/:year/:month', async (req, res, next) => {
 
     const token = req.authToken;
 
     // Gets the path of the user's workouts for that month.
-    var path = '/calender/' + req.params.uuid + '/' + req.params.year + '/' + req.params.month;
+    var path = '/calendar/' + req.params.uuid + '/' + req.params.year + '/' + req.params.month;
     var ret;
     var error = '';
     try {
@@ -53,12 +54,12 @@ exports.setApp = function (app) {
   })
 
   // Gets the workout for a given day in a given month in a given year.
-  app.get('/api/calender/:uuid/:year/:month/:day', async (req, res, next) => {
+  app.get('/api/calendar/:uuid/:year/:month/:day', async (req, res, next) => {
 
     const token = req.authToken;
 
     // Gets the path of a specific workout on that day.
-    var path = '/calender/' + req.params.uuid + '/' + req.params.year + '/' + req.params.month + '/' + req.params.day;
+    var path = '/calendar/' + req.params.uuid + '/' + req.params.year + '/' + req.params.month + '/' + req.params.day;
     var ret;
     var error = '';
     try {
@@ -74,15 +75,15 @@ exports.setApp = function (app) {
   })
 
   // Updates a single date-specific workout.
-  app.patch('/api/calender/:uuid/:year/:month/:day', async (req, res, next) => {
+  app.patch('/api/calendar/:uuid/:year/:month/:day/update', async (req, res, next) => {
 
     // Stores the inputted updated workout in JSON format.
-    const {muscleGroup, focusTypes, name, sets, repititions, duration, resistance, exercises} = req.body;
-    const updatedExercise = {MuscleGroup: muscleGroup, FocusTypes: focusTypes, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance, Exercises: exercises}
+    const {muscleGroup, focusTypes, name, sets, repititions, duration, resistance, exercises, split, unworkable} = req.body;
+    const updatedExercise = {MuscleGroup: muscleGroup, FocusTypes: focusTypes, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance, Exercises: exercises, Split:split,Unworkable:unworkable}
     const token = req.authToken;
 
     // Gets the path of the the workout on that day.
-    var path = '/calender/' + req.params.uuid + '/' + req.params.year + '/' + req.params.month + '/' + req.params.day;
+    var path = '/calendar/' + req.params.uuid + '/' + req.params.year + '/' + req.params.month + '/' + req.params.day;
     var ret;
     var error = '';
     try {
@@ -99,12 +100,12 @@ exports.setApp = function (app) {
   })
 
   // Deletes a single-day workout.
-  app.delete('/api/calender/:uuid/:year/:month/:day', async (req, res, next) => {
+  app.delete('/api/calendar/:uuid/:year/:month/:day', async (req, res, next) => {
 
     const token = req.authToken;
 
     // Gets the path of the workout on the given day.
-    var path = '/calender/' + req.params.uuid + '/' + req.params.year + '/' + req.params.month + '/' + req.params.day;
+    var path = '/calendar/' + req.params.uuid + '/' + req.params.year + '/' + req.params.month + '/' + req.params.day;
     var ret;
     var error = '';
 
@@ -245,8 +246,8 @@ exports.setApp = function (app) {
     app.post('/api/workout/:uuid/create', async (req, res, next) => {
 
       // Stores the inputted workout in JSON format.
-      const {muscleGroup, focusTypes, name, sets, repititions, duration, resistance, exercises} = req.body;
-      const newWorkout = {MuscleGroup: muscleGroup, FocusTypes: focusTypes, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance, Exercises: exercises};
+      const {muscleGroup, focusTypes, name, sets, repititions, duration, resistance, exercises,split,unworkable} = req.body;
+      const newWorkout = {MuscleGroup: muscleGroup, FocusTypes: focusTypes, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance, Exercises: exercises, Split: split, Unworkable: unworkable};
       const token = req.authToken;
 
       // Gets the path of the current user's workouts.
@@ -310,8 +311,8 @@ exports.setApp = function (app) {
     app.patch('/api/workout/:uuid/:workoutId/update', async (req, res, next) => {
 
       // Stores the inputted updated workout in JSON format.
-      const {muscleGroup, focusTypes, name, sets, repititions, duration, resistance, exercises} = req.body;
-      const updatedWorkout = {MuscleGroup: muscleGroup, FocusTypes: focusTypes, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance, Exercises: exercises}
+      const {muscleGroup, focusTypes, name, sets, repititions, duration, resistance, exercises,split,unworkable} = req.body;
+      const updatedWorkout = {MuscleGroup: muscleGroup, FocusTypes: focusTypes, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance, Exercises: exercises, Split:split, Unworkable:unworkable}
       const token = req.authToken;
 
       // Gets the path of a specific workout from among the user's workouts.
