@@ -31,7 +31,6 @@ exports.setApp = function (app) {
     }
   })
 
-  // TODO
   // Gets a calendar for the current user on the given month and year.
   app.get('/api/calendar/:uuid/:year/:month', async (req, res, next) => {
 
@@ -40,6 +39,7 @@ exports.setApp = function (app) {
     const d = new Date();
     d.setFullYear(req.params.year,req.params.month,1);
 
+    var splitStart =new Date();
     var path;    
     var ret;
     var workoutArray = [];
@@ -56,36 +56,49 @@ exports.setApp = function (app) {
     }
     catch(e){
       error = e.toString();
-      ret = {message: "Could not retrieve split data", error: error , extra: splitJSON, bob: split};
+      ret = {message: "Could not retrieve split data", error: error};
       res.status(404).json(ret);
     }
-
-    //this chunk of code checks to see if the split starts at a later date than the start of the month
+    
+    //this chunk of code checks to see if today is at a later date than the start of the month
     //if it does, it moves the start to that date
     //this will indirectly skip any workouts in the past, and result in an empty return array for previous months
-    const splitStart = new Date();
-    splitStart.setFullYear(split.StartYear,split.StartMonth, split.StartDate);
+    const currentDay = new Date();
     
-    if(d.getTime()<splitStart.getTime()){
-      d.setTime(splitStart.getTime());
+    if(d.getTime()<currentDay.getTime()){
+      d.setTime(currentDay.getTime());
     }
     
-    //get all split workouts here and store them as an array
-    while(splitIndex < split.Length){
-      try{
-        //try to get the next workout in split and store in array
-        path = '/workout/'+ req.params.uuid + '/' + split.Workouts[splitIndex%split.Length];
-        splitworkout = await FBEndpoints.getValueAtPath(token, path);
-        splitarray.push(splitworkout);
+    //if statement handles if there is no split for user
+    if(split!=null){
+      //get all split workouts here and store them as an array
+      while(splitIndex < split.Length){
+        try{
+          //try to get the next workout in split and store in array
+          path = '/workout/'+ req.params.uuid + '/' + split.Workouts[splitIndex%split.Length];
+          splitworkout = await FBEndpoints.getValueAtPath(token, path);
+          splitarray.push(splitworkout);
+        }
+        catch(e){
+          error = e.toString();
+          ret = {message: "Could not retrieve split workouts", error: error};
+          res.status(404).json(ret);
+        }
+        splitIndex++;
+        //while loop should finish with splitIndex==split.length
       }
-      catch(e){
-        error = e.toString();
-        ret = {message: "Could not retrieve split workouts", error: error};
-        res.status(404).json(ret);
+
+      
+      splitStart.setFullYear(split.StartYear,split.StartMonth,split.StartDate);
+      
+      //bring split up to current day
+      while(splitStart.getDate() < d.getDate()){
+        splitIndex++;
+        splitStart.setDate(splitStart.getDate()+1);
       }
-      splitIndex++;
-      //while loop should finish with splitIndex==split.length
     }
+
+
 
     //potentially add update to splitIndex here from req.params
     //ignore if another solution to next month problem found
@@ -99,13 +112,29 @@ exports.setApp = function (app) {
         //path for current day in loop
         path = '/calendar/' + req.params.uuid + '/' + req.params.year + '/' + req.params.month + '/' + d.getDate();
         temp= await FBEndpoints.getValueAtPath(token, path);
-          
+        
+        //if there is no split just null to empty days
+        if(split==null){
+          workoutArray.push(temp);
+          d.setDate(d.getDate()+1);
+          continue;
+        }
+        
         //if nothing in calendar, take workout from splits
         if(temp == null){
+
           
-          //add the next split workout into the array and increment index
-          workoutArray.push(splitarray[splitIndex%split.Length]);
-          splitIndex++;
+          //if split hasnt started yet, just add whatever is in the calnedar
+          if(d.getTime() < splitStart.getTime()){
+            workoutArray.push(temp);
+          }
+          //else add from split
+          else{
+            //add the next split workout into the array and increment index
+            workoutArray.push(splitarray[splitIndex%split.Length]);
+            splitIndex++;
+          }
+          
         }
         else{
           
@@ -123,7 +152,9 @@ exports.setApp = function (app) {
       }
       
 
-      splitIndex = splitIndex%split.Length;
+      if(split!=null){
+        splitIndex = splitIndex%split.Length;
+      }
       var result ={calendar: workoutArray , index: splitIndex};
       res.status(200).json(result);
     } catch (e) {
