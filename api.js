@@ -20,7 +20,7 @@ exports.setApp = function (app) {
     var error = '';
     try {
       // Attempts to post the JSON workout to the database.
-      var result = await FBEndpoints.postValueAtPath(token, path, newCalenderWorkout);
+      var result = await FBEndpoints.putValueAtPath(token, path, newCalenderWorkout);
       ret = {message: "Workout created successfully", data: result};
       res.status(200).json(ret);
     } catch (e) {
@@ -35,20 +35,101 @@ exports.setApp = function (app) {
   // Gets a calendar for the current user on the given month and year.
   app.get('/api/calendar/:uuid/:year/:month', async (req, res, next) => {
 
-    const token = req.authToken;
+    const token = req.authToken
+    //create Data object at the start of the month
+    const d = new Date();
+    d.setFullYear(req.params.year,req.params.month,1);
 
-    // Gets the path of the user's workouts for that month.
-    var path = '/calendar/' + req.params.uuid + '/' + req.params.year + '/' + req.params.month;
+    var path;    
     var ret;
+    var workoutArray = [];
+    var splitarray =[];
+    var temp;
+    var splitworkout;
+    var splitIndex = 0;
     var error = '';
+    try{
+      //try to get split info and convert from JSON to object
+      path = '/split/'+ req.params.uuid ;
+      var splitJSON = await FBEndpoints.getValueAtPath(token, path);
+      var split = JSON.parse(JSON.stringify(splitJSON));
+    }
+    catch(e){
+      error = e.toString();
+      ret = {message: "Could not retrieve split data", error: error , extra: splitJSON, bob: split};
+      res.status(404).json(ret);
+    }
+
+    //this chunk of code checks to see if the split starts at a later date than the start of the month
+    //if it does, it moves the start to that date
+    //this will indirectly skip any workouts in the past, and result in an empty return array for previous months
+    const splitStart = new Date();
+    splitStart.setFullYear(split.StartYear,split.StartMonth, split.StartDate);
+    
+    if(d.getTime()<splitStart.getTime()){
+      d.setTime(splitStart.getTime());
+    }
+    
+    //get all split workouts here and store them as an array
+    while(splitIndex < split.Length){
+      try{
+        //try to get the next workout in split and store in array
+        path = '/workout/'+ req.params.uuid + '/' + split.Workouts[splitIndex%split.Length];
+        splitworkout = await FBEndpoints.getValueAtPath(token, path);
+        splitarray.push(splitworkout);
+      }
+      catch(e){
+        error = e.toString();
+        ret = {message: "Could not retrieve split workouts", error: error};
+        res.status(404).json(ret);
+      }
+      splitIndex++;
+      //while loop should finish with splitIndex==split.length
+    }
+
+    //potentially add update to splitIndex here from req.params
+    //ignore if another solution to next month problem found
+
+    //the main try
     try {
-      // Attempts to get a calender of all workouts that month.
-      var result = await FBEndpoints.getValueAtPath(token, path);
+      //loop while in the month
+      while(d.getMonth() == req.params.month){
+        
+        
+        //path for current day in loop
+        path = '/calendar/' + req.params.uuid + '/' + req.params.year + '/' + req.params.month + '/' + d.getDate();
+        temp= await FBEndpoints.getValueAtPath(token, path);
+          
+        //if nothing in calendar, take workout from splits
+        if(temp == null){
+          
+          //add the next split workout into the array and increment index
+          workoutArray.push(splitarray[splitIndex%split.Length]);
+          splitIndex++;
+        }
+        else{
+          
+          //add the workout to the array
+          workoutArray.push(temp);
+
+          //if both calendar day and split workout are rest days, skip to next in split
+          if(JSON.parse(JSON.stringify(temp)).Unworkable==true && splitarray[splitIndex%split.Length].Unworkable==true){
+           splitIndex++;
+          }
+        }
+
+        //increment the date by 1
+        d.setDate(d.getDate()+1);
+      }
+      
+
+      splitIndex = splitIndex%split.Length;
+      var result ={calendar: workoutArray , index: splitIndex};
       res.status(200).json(result);
     } catch (e) {
       // Prints any error that occurs.
       error = e.toString();
-      ret = {message: "Workouts not found", error: error};
+      ret = {message: "Error making array", error: error};
       res.status(404).json(ret);
     }
   })
@@ -363,8 +444,8 @@ exports.setApp = function (app) {
     app.post('/api/split/:uuid/create', async (req, res, next) => {
 
       // Stores the inputted split in JSON format.
-      const {focus, startDate, length, workouts} = req.body;
-      const newSplit = {Focus: focus, StartDate: startDate, Length: length, Workouts: workouts};
+      const {focus, startYear, startMonth, startDate, length, workouts} = req.body;
+      const newSplit = {Focus: focus, StartDate: startDate, Length: length, Workouts: workouts, StartYear: startYear, StartMonth: startMonth};
       const token = req.authToken;
 
       // Gets the path where the user's split will be stored.
@@ -407,8 +488,8 @@ exports.setApp = function (app) {
     app.patch('/api/split/:uuid/update', async (req, res, next) => {
 
       // Stores the inputted updated workout in JSON format.
-      const {focus, startDate, length, workouts} = req.body;
-      const updatedSplit = {Focus: focus, StartDate: startDate, Length: length, Workouts: workouts};
+      const {focus,startYear, startMonth, startDate, length, workouts} = req.body;
+      const updatedSplit = {Focus: focus, StartDate: startDate, Length: length, Workouts: workouts, StartYear: startYear, StartMonth: startMonth};
       const token = req.authToken;
 
       // Gets the path of the current user's split.
