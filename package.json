@@ -4,7 +4,8 @@
     "description": "",
     "main": "server.js",
     "scripts": {
-        "start": "node server.js"
+        "start": "node server.js",
+        "test": "jest"
     },
     "author": "",
     "license": "ISC",
@@ -16,5 +17,8 @@
         "express": "^4.17.1",
         "firebase-admin": "^9.10.0",
         "jsonwebtoken": "^8.5.1"
+    },
+    "devDependencies": {
+        "jest": "^27.0.6"
     }
 }
