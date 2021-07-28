@@ -9,7 +9,7 @@ exports.getValueAtPath = async (authkey, path) => {
     // Send our request, wait for response
     try {
         const result = await axios.get(builtPath);
-        console.log(result.data);
+        //console.log(result.data);
         return result.data;
     } catch (e) {
         console.log(e);
@@ -66,8 +66,7 @@ exports.putValueAtPath = async (authkey, path, data) => {
     Users/<uuid>/<data>
 */
 exports.postValueAtPath = async (authkey, path, data) => {
-
-    ret = 10;
+    var ret;
     var builtPath = `${FB_URL}${path}.json`;
     if(authkey != null) builtPath += `?auth=${authkey}`;
 
@@ -76,7 +75,7 @@ exports.postValueAtPath = async (authkey, path, data) => {
         .then(res =>{
             //console.log(res);
             //console.log(res.data);
-            
+            ret = res.data;
         })
         .catch(e =>{
             console.log(e);

@@ -22,14 +22,18 @@ test('should fail to put data at path', async ()=>{
     expect(output).toBe(20);
 });
 
+/*
 //post
 test('should post data at path', async ()=>{
     
     var message = {"day": date.toString()}
     var output = await Promise.resolve(postValueAtPath( null ,"/unittests/post", message ));
+
+    console.log(output);
     
     expect(output).toBe(10);
 });
+
 
 //post fail
 test('should fail to post data at path', async ()=>{
@@ -39,6 +43,7 @@ test('should fail to post data at path', async ()=>{
     
     expect(output).toBe(20);
 });
+*/
 
 //get
 test('should get data at path', async ()=>{
