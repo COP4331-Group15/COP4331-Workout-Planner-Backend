@@ -473,6 +473,7 @@ exports.setApp = function (app) {
 
     // Creates a split.
     app.post('/api/split/:uuid/create', async (req, res, next) => {
+      console.log('Receieved body: ' + JSON.stringify(req.body));
 
       // Stores the inputted split in JSON format.
       const {focus, startYear, startMonth, startDate, length, workouts} = req.body;

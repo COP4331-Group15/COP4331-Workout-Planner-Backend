@@ -45,7 +45,6 @@ async function decodeIDToken(req, res, next) {
     const header = req.headers?.authorization;
     if(header !== 'Bearer null' && req.headers?.authorization?.startsWith('Bearer ')) {
         const idToken = req.headers.authorization.split('Bearer ')[1];
-        console.log(idToken);
         if(idToken === "dev") {
             req['currentUser'] = devUser;
             req['authToken'] = null;
