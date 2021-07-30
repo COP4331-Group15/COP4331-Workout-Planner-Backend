@@ -10,8 +10,8 @@ exports.setApp = function (app) {
   app.post('/api/calendar/:uuid/:year/:month/:day/create', async (req, res, next) => {
 
     // Stores the inputted workout in JSON format.
-    const {muscleGroup, focusTypes, name, sets, repititions, duration, resistance, exercises, split, unworkable} = req.body;
-    const newCalenderWorkout = {MuscleGroup: muscleGroup, FocusTypes: focusTypes, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance, Exercises: exercises, Split: split, Unworkable: unworkable};
+    const {startTime, exercises, unworkable} = req.body;
+    const newCalenderWorkout = {StartTime: startTime, Exercises: exercises, Unworkable: unworkable};
     const token = req.authToken;
 
     // Gets the path of the current user's workout for that day.
@@ -190,8 +190,8 @@ exports.setApp = function (app) {
   app.patch('/api/calendar/:uuid/:year/:month/:day/update', async (req, res, next) => {
 
     // Stores the inputted updated workout in JSON format.
-    const {muscleGroup, focusTypes, name, sets, repititions, duration, resistance, exercises, split, unworkable} = req.body;
-    const updatedExercise = {MuscleGroup: muscleGroup, FocusTypes: focusTypes, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance, Exercises: exercises, Split:split,Unworkable:unworkable}
+    const {startTime, exercises, unworkable} = req.body;
+    const updatedExercise = {StartTime: startTime,  Exercises: exercises, Unworkable:unworkable}
     const token = req.authToken;
 
     // Gets the path of the the workout on that day.
@@ -241,8 +241,8 @@ exports.setApp = function (app) {
     app.post('/api/exercise/:uuid/create', async (req, res, next) => {
 
       // Stores the inputted exercise in JSON format.
-      const {muscleGroup, focusTypes, name, sets, repititions, duration, resistance} = req.body;
-      const newExercise = {MuscleGroup: muscleGroup, FocusTypes: focusTypes, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance};
+      const {muscleGroup, name, sets, repititions, duration, resistance} = req.body;
+      const newExercise = {MuscleGroup: muscleGroup, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance};
       const token = req.authToken;
 
       // Gets the path of the current user's exercises.
@@ -306,8 +306,8 @@ exports.setApp = function (app) {
     app.patch('/api/exercise/:uuid/:exerciseId/update', async (req, res, next) => {
 
       // Stores the inputted updated exercise in JSON format.
-      const {muscleGroup, focusTypes, name, sets, repititions, duration, resistance} = req.body;
-      const updatedExercise = {MuscleGroup: muscleGroup, FocusTypes: focusTypes, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance}
+      const {muscleGroup, name, sets, repititions, duration, resistance} = req.body;
+      const updatedExercise = {MuscleGroup: muscleGroup, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance}
       const token = req.authToken;
 
       // Gets the path of a specific exercise from among the user's exercises.
@@ -358,8 +358,8 @@ exports.setApp = function (app) {
     app.post('/api/workout/:uuid/create', async (req, res, next) => {
 
       // Stores the inputted workout in JSON format.
-      const {muscleGroup, focusTypes, name, sets, repititions, duration, resistance, exercises,split,unworkable} = req.body;
-      const newWorkout = {MuscleGroup: muscleGroup, FocusTypes: focusTypes, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance, Exercises: exercises, Split: split, Unworkable: unworkable};
+      const {startTime, exercises, unworkable} = req.body;
+      const newWorkout = {StartTime: startTime, Exercises: exercises, Unworkable: unworkable};
       const token = req.authToken;
 
       // Gets the path of the current user's workouts.
@@ -423,8 +423,8 @@ exports.setApp = function (app) {
     app.patch('/api/workout/:uuid/:workoutId/update', async (req, res, next) => {
 
       // Stores the inputted updated workout in JSON format.
-      const {muscleGroup, focusTypes, name, sets, repititions, duration, resistance, exercises,split,unworkable} = req.body;
-      const updatedWorkout = {MuscleGroup: muscleGroup, FocusTypes: focusTypes, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance, Exercises: exercises, Split:split, Unworkable:unworkable}
+      const {startTime, exercises, unworkable} = req.body;
+      const updatedWorkout = {StartTime: startTime, Exercises: exercises, Unworkable:unworkable}
       const token = req.authToken;
 
       // Gets the path of a specific workout from among the user's workouts.
@@ -476,8 +476,8 @@ exports.setApp = function (app) {
       console.log('Receieved body: ' + JSON.stringify(req.body));
 
       // Stores the inputted split in JSON format.
-      const {focus, startYear, startMonth, startDate, length, workouts} = req.body;
-      const newSplit = {Focus: focus, StartDate: startDate, Length: length, Workouts: workouts, StartYear: startYear, StartMonth: startMonth};
+      const {startYear, startMonth, startDate, length, workouts} = req.body;
+      const newSplit = {StartDate: startDate, Length: length, Workouts: workouts, StartYear: startYear, StartMonth: startMonth};
       const token = req.authToken;
 
       // Gets the path where the user's split will be stored.
@@ -520,8 +520,8 @@ exports.setApp = function (app) {
     app.patch('/api/split/:uuid/update', async (req, res, next) => {
 
       // Stores the inputted updated workout in JSON format.
-      const {focus,startYear, startMonth, startDate, length, workouts} = req.body;
-      const updatedSplit = {Focus: focus, StartDate: startDate, Length: length, Workouts: workouts, StartYear: startYear, StartMonth: startMonth};
+      const {startYear, startMonth, startDate, length, workouts} = req.body;
+      const updatedSplit = { StartDate: startDate, Length: length, Workouts: workouts, StartYear: startYear, StartMonth: startMonth};
       const token = req.authToken;
 
       // Gets the path of the current user's split.
