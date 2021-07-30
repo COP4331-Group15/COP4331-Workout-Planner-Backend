@@ -63,11 +63,18 @@ exports.setApp = function (app) {
     //this chunk of code checks to see if today is at a later date than the start of the month
     //if it does, it moves the start to that date
     //this will indirectly skip any workouts in the past, and result in an empty return array for previous months
+    //might not need anymore lol
+    /*
     const currentDay = new Date();
     
-    if(d.getTime()<currentDay.getTime()){
-      d.setTime(currentDay.getTime());
+    if(d.getMonth()<currentDay.getMonth()){
+      d.setMonth(currentDay.getMonth(),1);
+
+      if(d.getFullYear()<currentDay.getFullYear()){
+        d.setFullYear(currentDay.getFullYear());
+      }
     }
+    */
     
     //if statement handles if there is no split for user
     if(split!=null){
@@ -90,9 +97,10 @@ exports.setApp = function (app) {
 
       
       splitStart.setFullYear(split.StartYear,split.StartMonth,split.StartDate);
+     
       
       //bring split up to current day
-      while(splitStart.getDate() < d.getDate()){
+      while((splitStart.getDate() < d.getDate()) && (splitStart.getMonth() <= d.getMonth()) && (splitStart.getFullYear() <= d.getFullYear()) ){
         splitIndex++;
         splitStart.setDate(splitStart.getDate()+1);
       }
@@ -126,6 +134,7 @@ exports.setApp = function (app) {
           
           //if split hasnt started yet, just add whatever is in the calnedar
           if(d.getTime() < splitStart.getTime()){
+
             workoutArray.push(temp);
           }
           //else add from split
@@ -241,8 +250,8 @@ exports.setApp = function (app) {
     app.post('/api/exercise/:uuid/create', async (req, res, next) => {
 
       // Stores the inputted exercise in JSON format.
-      const {muscleGroup, name, sets, repititions, duration, resistance} = req.body;
-      const newExercise = {MuscleGroup: muscleGroup, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance};
+      const {muscleGroup, name, sets, repititions: repetitions, duration, resistance} = req.body;
+      const newExercise = {MuscleGroup: muscleGroup, Name: name, Sets: sets, Repetitions: repetitions, Duration: duration, Resistance: resistance};
       const token = req.authToken;
 
       // Gets the path of the current user's exercises.
@@ -306,8 +315,8 @@ exports.setApp = function (app) {
     app.patch('/api/exercise/:uuid/:exerciseId/update', async (req, res, next) => {
 
       // Stores the inputted updated exercise in JSON format.
-      const {muscleGroup, name, sets, repititions, duration, resistance} = req.body;
-      const updatedExercise = {MuscleGroup: muscleGroup, Name: name, Sets: sets, Repititions: repititions, Duration: duration, Resistance: resistance}
+      const {muscleGroup, name, sets, repetitions, duration, resistance} = req.body;
+      const updatedExercise = {MuscleGroup: muscleGroup, Name: name, Sets: sets, Repetitions: repetitions, Duration: duration, Resistance: resistance}
       const token = req.authToken;
 
       // Gets the path of a specific exercise from among the user's exercises.
