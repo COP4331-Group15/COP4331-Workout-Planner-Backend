@@ -200,7 +200,7 @@ exports.setApp = function (app) {
     const token = req.authToken;
 
     // Get the full details of the exercises for a given day
-    var path = '/calendar/' + req.params.uuid + '/' + req.params.year + '/' + req.params.month + '/' + req.params.day + '/exercises';
+    var path = '/calendar/' + req.params.uuid + '/' + req.params.year + '/' + req.params.month + '/' + req.params.day + '/Exercises';
     var ret;
     var error = '';
     try {
@@ -208,11 +208,10 @@ exports.setApp = function (app) {
       var result = await FBEndpoints.getValueAtPath(token, path);
       
       // We should now have an array of exercises for the given day.
-      var exerciseKeys = [];
-      exerciseKeys.push(Object.values(result));
+      var exerciseKeys = result;
 
       // Get the relevant data
-      path = '/exercises/' + req.params.uuid;
+      path = '/exercise/' + req.params.uuid;
       var entriesData = await FBEndpoints.getManyAtPath(token, path, exerciseKeys);
       res.status(200).json({message: "Succesfully found exercises", exercises: entriesData});
     } catch (e) {
@@ -460,7 +459,7 @@ exports.setApp = function (app) {
     const token = req.authToken;
 
     // Get the full details of the exercises for a given day
-    var path = '/workout/' + req.params.uuid + '/' + req.params.workoutId + '/exercises';
+    var path = '/workout/' + req.params.uuid + '/' + req.params.workoutId + '/Exercises';
     var ret;
     var error = '';
     try {
@@ -468,11 +467,10 @@ exports.setApp = function (app) {
       var result = await FBEndpoints.getValueAtPath(token, path);
       
       // We should now have an array of exercises for the given day.
-      var exerciseKeys = [];
-      exerciseKeys.push(Object.values(result));
+      var exerciseKeys = result;
 
       // Get the relevant data
-      path = '/exercises/' + req.params.uuid;
+      path = '/exercise/' + req.params.uuid;
       var entriesData = await FBEndpoints.getManyAtPath(token, path, exerciseKeys);
       res.status(200).json({message: "Succesfully found exercises", exercises: entriesData});
     } catch (e) {
