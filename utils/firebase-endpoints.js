@@ -16,6 +16,30 @@ exports.getValueAtPath = async (authkey, path) => {
     }
 }
 
+exports.getManyAtPath = async (authkey, path, keys) => {
+    var builtPath = `${FB_URL}${path}.json`;
+    if(authkey != null) builtPath += `?auth=${authkey}`;
+
+    try {
+        // Get our initial result - all data at that path
+        const result = await axios.get(builtPath);
+
+        // Filter our result down so it only has the keys we want
+        const filtered = {};
+        for(const [key, value] in Object.entries(result.data)) {
+            // If our key is in our provided list of keys, add the key/value pair
+            // to the list
+            if(key in keys) {
+                filtered[key] = value;
+            }
+        }
+
+        return filtered;
+    } catch (e) {
+        console.log(e);
+    }
+}
+
 exports.deleteValueAtPath = async (authkey, path) => {
     ret = 10;
     var builtPath = `${FB_URL}${path}.json`;

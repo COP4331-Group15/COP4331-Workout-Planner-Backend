@@ -195,6 +195,33 @@ exports.setApp = function (app) {
     }
   })
 
+  // Gets the full details of each exercise for the given day in a given month in a given year.
+  app.get('/api/calendar/:uuid/:year/:month/:day/exercises', async (req, res, next) => {
+    const token = req.authToken;
+
+    // Get the full details of the exercises for a given day
+    var path = '/calendar/' + req.params.uuid + '/' + req.params.year + '/' + req.params.month + '/' + req.params.day + '/exercises';
+    var ret;
+    var error = '';
+    try {
+      // Attempts to get the list of exercise IDs for the given day.
+      var result = await FBEndpoints.getValueAtPath(token, path);
+      
+      // We should now have an array of exercises for the given day.
+      var exerciseKeys = [];
+      exerciseKeys.push(Object.values(result));
+
+      // Get the relevant data
+      path = '/exercises/' + req.params.uuid;
+      var entriesData = await FBEndpoints.getManyAtPath(token, path, exerciseKeys);
+      res.status(200).json({message: "Succesfully found exercises", exercises: entriesData});
+    } catch (e) {
+      error = e.toString();
+      ret = {message: "An error ocurred.", error: error};
+      res.status(500).json(ret);
+    }
+  }); 
+
   // Updates a single date-specific workout.
   app.patch('/api/calendar/:uuid/:year/:month/:day/update', async (req, res, next) => {
 
@@ -427,6 +454,33 @@ exports.setApp = function (app) {
         res.status(404).json(ret);
       }
     })
+
+    // Gets the full details of each exercise for the given day in a given month in a given year.
+  app.get('/api/workout/:uuid/:workoutId/exercises', async (req, res, next) => {
+    const token = req.authToken;
+
+    // Get the full details of the exercises for a given day
+    var path = '/workout/' + req.params.uuid + '/' + req.params.workoutId + '/exercises';
+    var ret;
+    var error = '';
+    try {
+      // Attempts to get the list of exercise IDs for the given day.
+      var result = await FBEndpoints.getValueAtPath(token, path);
+      
+      // We should now have an array of exercises for the given day.
+      var exerciseKeys = [];
+      exerciseKeys.push(Object.values(result));
+
+      // Get the relevant data
+      path = '/exercises/' + req.params.uuid;
+      var entriesData = await FBEndpoints.getManyAtPath(token, path, exerciseKeys);
+      res.status(200).json({message: "Succesfully found exercises", exercises: entriesData});
+    } catch (e) {
+      error = e.toString();
+      ret = {message: "An error ocurred.", error: error};
+      res.status(500).json(ret);
+    }
+  }); 
 
     // Updates an existing workout.
     app.patch('/api/workout/:uuid/:workoutId/update', async (req, res, next) => {
