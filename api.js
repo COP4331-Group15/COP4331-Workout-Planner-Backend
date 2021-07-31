@@ -276,7 +276,7 @@ exports.setApp = function (app) {
     app.post('/api/exercise/:uuid/create', async (req, res, next) => {
 
       // Stores the inputted exercise in JSON format.
-      const {muscleGroup, name, sets, repititions: repetitions, duration, resistance} = req.body;
+      const {muscleGroup, name, sets, repetitions, duration, resistance} = req.body;
       const newExercise = {MuscleGroup: muscleGroup, Name: name, Sets: sets, Repetitions: repetitions, Duration: duration, Resistance: resistance};
       const token = req.authToken;
 
