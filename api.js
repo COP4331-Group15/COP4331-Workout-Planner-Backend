@@ -211,7 +211,17 @@ exports.setApp = function (app) {
       // Get the relevant data
       path = '/exercise/' + req.params.uuid;
       var entriesData = await FBEndpoints.getManyAtPath(token, path, exerciseKeys);
-      res.status(200).json({message: "Succesfully found exercises", exercises: entriesData});
+
+      // Package the entries into a properly sorted array w/ keys
+      var exercises = [];
+      for(const key of exerciseKeys) {
+        if(Object.keys(entriesData).includes(key)) {
+          const exercise = entriesData[key];
+          exercise.Key = key;
+        }
+      }
+
+      res.status(200).json({message: "Succesfully found exercises", exercises: exercises});
     } catch (e) {
       error = e.toString();
       ret = {message: "An error ocurred.", error: error};
@@ -470,7 +480,17 @@ exports.setApp = function (app) {
       // Get the relevant data
       path = '/exercise/' + req.params.uuid;
       var entriesData = await FBEndpoints.getManyAtPath(token, path, exerciseKeys);
-      res.status(200).json({message: "Succesfully found exercises", exercises: entriesData});
+
+      // Package the entries into a properly sorted array w/ keys
+      var exercises = [];
+      for(const key of exerciseKeys) {
+        if(Object.keys(entriesData).includes(key)) {
+          const exercise = entriesData[key];
+          exercise.Key = key;
+        }
+      }
+
+      res.status(200).json({message: "Succesfully found exercises", exercises: exercises});
     } catch (e) {
       error = e.toString();
       ret = {message: "An error ocurred.", error: error};

@@ -23,15 +23,12 @@ exports.getManyAtPath = async (authkey, path, keys) => {
     try {
         // Get our initial result - all data at that path
         const result = await axios.get(builtPath);
-        console.log(result.data);
 
         // Filter our result down so it only has the keys we want
         const filtered = {};
-        console.log(keys);
         for(const [key, value] of Object.entries(result.data)) {
             // If our key is in our provided list of keys, add the key/value pair
             // to the list
-            console.log(key);
             if(keys.includes(key)) {
                 filtered[key] = value;
             }
