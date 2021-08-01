@@ -135,11 +135,15 @@ exports.setApp = function (app) {
           //if split hasnt started yet, just add whatever is in the calnedar
           if(d.getTime() < splitStart.getTime()){
 
+            // Mark the workout as date-specific
+            temp.DateSpecific = true;
+
             workoutArray.push(temp);
           }
           //else add from split
           else{
             //add the next split workout into the array and increment index
+            splitarray[splitIndex%split.Length].DateSpecific = false;
             workoutArray.push(splitarray[splitIndex%split.Length]);
             splitIndex++;
           }
@@ -148,6 +152,7 @@ exports.setApp = function (app) {
         else{
           
           //add the workout to the array
+          temp.DateSpecific = true;
           workoutArray.push(temp);
 
           //if both calendar day and split workout are rest days, skip to next in split
