@@ -20,6 +20,7 @@ exports.setApp = function (app) {
     var error = '';
     try {
       // Attempts to post the JSON workout to the database.
+      console.log(path);
       var result = await FBEndpoints.postValueAtPath(token, path, newCalenderWorkout);
       ret = {message: "Workout created successfully", data: result};
       res.status(200).json(ret);
@@ -79,6 +80,10 @@ exports.setApp = function (app) {
     //if statement handles if there is no split for user
     if(split!=null){
       //get all split workouts here and store them as an array
+      if(split.Length == undefined) {
+        split.Length = split.Workouts.length;
+      }
+
       while(splitIndex < split.Length){
         try{
           //try to get the next workout in split and store in array
@@ -96,9 +101,7 @@ exports.setApp = function (app) {
         //while loop should finish with splitIndex==split.length
       }
 
-      
       splitStart.setFullYear(split.StartYear,split.StartMonth,split.StartDate);
-     
       
       //bring split up to current day
       while((splitStart.getDate() < d.getDate()) && (splitStart.getMonth() <= d.getMonth()) && (splitStart.getFullYear() <= d.getFullYear()) ){
@@ -106,10 +109,6 @@ exports.setApp = function (app) {
         splitStart.setDate(splitStart.getDate()+1);
       }
     }
-
-    //console.log(splitarray);
-
-
 
     //potentially add update to splitIndex here from req.params
     //ignore if another solution to next month problem found
