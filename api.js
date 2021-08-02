@@ -21,7 +21,7 @@ exports.setApp = function (app) {
     try {
       // Attempts to post the JSON workout to the database.
       console.log(path);
-      var result = await FBEndpoints.postValueAtPath(token, path, newCalenderWorkout);
+      var result = await FBEndpoints.putValueAtPath(token, path, newCalenderWorkout);
       ret = {message: "Workout created successfully", data: result};
       res.status(200).json(ret);
     } catch (e) {
