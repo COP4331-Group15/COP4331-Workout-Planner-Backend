@@ -15,7 +15,7 @@ exports.setApp = function (app) {
     const token = req.authToken;
 
     // Gets the path of the current user's workout for that day.
-    var path = '/calendar/' + req.params.uuid + '/' + req.params.year + '/' + req.params.month + '/' + req.params.day;
+    var path = '/calendar/' + req.params.uuid + '/' + req.params.year + '/' + req.params.month + '/' + req.params.day + '/';
     var ret;
     var error = '';
     try {
