@@ -20,7 +20,7 @@ exports.setApp = function (app) {
     var error = '';
     try {
       // Attempts to post the JSON workout to the database.
-      var result = await FBEndpoints.putValueAtPath(token, path, newCalenderWorkout);
+      var result = await FBEndpoints.postValueAtPath(token, path, newCalenderWorkout);
       ret = {message: "Workout created successfully", data: result};
       res.status(200).json(ret);
     } catch (e) {
@@ -107,6 +107,8 @@ exports.setApp = function (app) {
       }
     }
 
+    //console.log(splitarray);
+
 
 
     //potentially add update to splitIndex here from req.params
@@ -124,6 +126,7 @@ exports.setApp = function (app) {
         
         //if there is no split just null to empty days
         if(split==null){
+          //console.log("no split");
           workoutArray.push(temp);
           d.setDate(d.getDate()+1);
           continue;
@@ -133,11 +136,13 @@ exports.setApp = function (app) {
         if(temp == null){
           //if split hasnt started yet, just add whatever is in the calnedar
           if(d.getTime() < splitStart.getTime()){
+            //console.log("Split hasn't started yet");
             workoutArray.push(temp);
           }
           //else add from split
           else{
             //add the next split workout into the array and increment index
+            //console.log("Split has priority");
             workoutArray.push(splitarray[splitIndex%split.Length]);
             splitIndex++;
           }
