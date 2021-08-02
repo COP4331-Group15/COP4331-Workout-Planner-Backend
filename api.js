@@ -203,14 +203,14 @@ exports.setApp = function (app) {
     var error = '';
     try {
       // Attempts to get the list of exercise IDs for the given day.
-      var result = await FBEndpoints.getValueAtPath(token, path);
+      var result = await FBEndpoints.getValueAtPath(token, path) ?? [];
       
       // We should now have an array of exercises for the given day.
       var exerciseKeys = result;
 
       // Get the relevant data
       path = '/exercise/' + req.params.uuid;
-      var entriesData = await FBEndpoints.getManyAtPath(token, path, exerciseKeys);
+      var entriesData = await FBEndpoints.getManyAtPath(token, path, exerciseKeys) ?? [];
 
       // Package the entries into a properly sorted array w/ keys
       var exercises = [];
@@ -472,14 +472,14 @@ exports.setApp = function (app) {
     var error = '';
     try {
       // Attempts to get the list of exercise IDs for the given day.
-      var result = await FBEndpoints.getValueAtPath(token, path);
+      var result = await FBEndpoints.getValueAtPath(token, path) ?? [];
       
       // We should now have an array of exercises for the given day.
       var exerciseKeys = result;
 
       // Get the relevant data
       path = '/exercise/' + req.params.uuid;
-      var entriesData = await FBEndpoints.getManyAtPath(token, path, exerciseKeys);
+      var entriesData = await FBEndpoints.getManyAtPath(token, path, exerciseKeys) ?? [];
 
       // Package the entries into a properly sorted array w/ keys
       var exercises = [];
