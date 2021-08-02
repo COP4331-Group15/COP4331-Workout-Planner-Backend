@@ -63,19 +63,18 @@ exports.deleteValueAtPath = async (authkey, path) => {
 //IF ANYTHING IS ALREADY AT THAT PATH, IT WILL OVER WRITE
 exports.putValueAtPath = async (authkey, path, data) => {
 
-    var ret = 10;
+    var ret;
     var builtPath = `${FB_URL}${path}.json`;
     if(authkey != null) builtPath += `?auth=${authkey}`;
     
     //put our data
     await axios.put(builtPath, data )
-        .then(res =>{
-            //console.log(res);
-            //console.log(res.data);
+        .then(res => {
+            ret = res.data;
         })
         .catch(e =>{
             console.log(e);
-            ret = 20;
+            ret = "null";
         });
     
     return ret;
