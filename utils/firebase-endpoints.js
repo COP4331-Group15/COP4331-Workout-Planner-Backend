@@ -66,6 +66,7 @@ exports.putValueAtPath = async (authkey, path, data) => {
     var ret;
     var builtPath = `${FB_URL}${path}.json`;
     if(authkey != null) builtPath += `?auth=${authkey}`;
+    console.log(builtPath);
     
     //put our data
     await axios.put(builtPath, data )
