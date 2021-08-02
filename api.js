@@ -218,6 +218,7 @@ exports.setApp = function (app) {
         if(Object.keys(entriesData).includes(key)) {
           const exercise = entriesData[key];
           exercise.Key = key;
+          exercises.push(exercise);
         }
       }
 
@@ -487,6 +488,7 @@ exports.setApp = function (app) {
         if(Object.keys(entriesData).includes(key)) {
           const exercise = entriesData[key];
           exercise.Key = key;
+          exercises.push(exercise);
         }
       }
 
